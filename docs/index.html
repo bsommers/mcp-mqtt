@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mcp-mqtt - hardened MQTT MCP servers</title>
+<meta name="description" content="Hardened MCP servers that let an LLM agent publish to and subscribe on Mosquitto, EMQX and NanoMQ, with deny-by-default authorization.">
+<meta name="theme-color" content="#050811">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="mcp-mqtt - hardened MQTT MCP servers">
+<meta property="og:description" content="Deny-by-default MCP servers for Mosquitto, EMQX and NanoMQ.">
+<meta property="og:image" content="assets/logo.png">
+<meta property="og:url" content="https://bsommers.github.io/mcp-mqtt/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+<main class="wrap">
+<header class="hero">
+<img class="logo" src="assets/logo.svg" alt="mcp-mqtt logo">
+<h1 class="mono" style="font-size:1.1rem;color:var(--blue)">Hardened MQTT for LLM agents</h1>
+<p class="tag">Let an agent publish to and subscribe on Mosquitto, EMQX and NanoMQ, with deny-by-default allowlists and bounded, untrusted-flagged output.</p>
+<div class="counts" role="list">
+<div class="count" role="listitem"><b>10</b>tools</div>
+<div class="count" role="listitem"><b>3</b>brokers</div>
+<div class="count" role="listitem"><b>270</b>tests</div>
+</div>
+<div class="install"><pre id="install"><code>uv sync &amp;&amp; uv run mcp-mosquitto</code></pre><button type="button" data-copy="install" aria-label="Copy install command">Copy</button></div>
+<div class="links"><a class="btn" href="https://github.com/bsommers/mcp-mqtt">GitHub</a><a class="btn hot" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/usermanual/README.md">User manual</a></div>
+</header>
+
+<section id="why-mcp-mqtt"><h2>Why mcp-mqtt</h2>
+<div class="card"><p>LLM agents need a safe bridge to MQTT, which carries device telemetry and control. A naive bridge lets the agent publish anywhere, subscribe to everything (<code>#</code>), flood the broker, and read attacker-controlled payloads as instructions. Naive bridges risk:</p>
+<ul><li>unbounded payloads</li><li>wildcard subscriptions</li><li>prompt injection via payloads</li><li>credentials in tool parameters</li></ul>
+<p><a href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/purpose.md#why-mcp-mqtt">Read the full motivation</a></p></div></section>
+
+<section id="value-proposition"><h2>Value proposition</h2>
+<ul class="sec-list">
+<li><b>Deny-by-default allowlists</b><br>Empty allowlists permit nothing.</li>
+<li><b>Size and rate bounds</b><br>Payload, message, response, QoS and calls-per-minute limits.</li>
+<li><b>Untrusted flagging</b><br>Inbound payloads are marked untrusted, truncated and structured.</li>
+<li><b>One tool surface</b><br>Shared across Mosquitto, EMQX and NanoMQ.</li>
+<li><b>Tested on real brokers</b><br>Integration tests run against live Docker brokers.</li>
+</ul>
+<p><a href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/purpose.md#value-proposition">Value proposition in detail</a></p></section>
+
+<section id="use-cases"><h2>Key use cases</h2>
+<div class="cards">
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">IoT sensor monitoring</h3><p style="color:var(--muted)">Subscribe to telemetry and let the agent summarise trends and anomalies.</p></article>
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">Ops triage via broker stats</h3><p style="color:var(--muted)">Use read-only stats and client listings on EMQX, NanoMQ and Mosquitto $SYS.</p></article>
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">Controlled device commands</h3><p style="color:var(--muted)">Publish only to an allowlisted command topic such as home/commands/#.</p></article>
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">Home automation</h3><p style="color:var(--muted)">Query state and issue narrowly scoped commands from natural language.</p></article>
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">Edge with NanoMQ</h3><p style="color:var(--muted)">Same tool surface for lightweight edge brokers.</p></article>
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">MQTT dev and test</h3><p style="color:var(--muted)">Inspect topics, retained messages and payloads while building.</p></article>
+<article class="card"><h3 class="mono" style="font-size:.9rem;color:var(--blue)">Read-only observability</h3><p style="color:var(--muted)">Set MQTT_READ_ONLY=1 and mqtt_publish disappears.</p></article>
+</div>
+<p><a href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/purpose.md#key-use-cases">More on use cases</a></p>
+<div class="card" style="margin-top:1rem;border-color:var(--orange)"><b class="mono" style="color:var(--orange)">When not to use it</b>
+<p>It is not for high-throughput streaming or bridging: each call opens a short-lived connection, responses are capped, and tool handlers are synchronous, so a blocking subscribe delays other calls on the same process. It is also not a substitute for broker-side ACLs and authentication.</p></div></section>
+
+<section id="brokers"><h2>Choose your broker</h2>
+<div role="tablist" aria-label="Brokers"><button role="tab" id="tab-mosquitto" aria-controls="p-mosquitto" aria-selected="true" tabindex="0" type="button">Mosquitto</button><button role="tab" id="tab-emqx" aria-controls="p-emqx" aria-selected="false" tabindex="-1" type="button">EMQX</button><button role="tab" id="tab-nanomq" aria-controls="p-nanomq" aria-selected="false" tabindex="-1" type="button">NanoMQ</button></div>
+<div role="tabpanel" id="p-mosquitto" aria-labelledby="tab-mosquitto" class="card"><div class="tab-head"><img src="assets/icons/icon-mosquitto.svg" alt="" width="48" height="48"><h3>Mosquitto</h3></div><p>Adds <code>mosquitto_sys_stats</code> reading <code>$SYS/broker/#</code>. Add <code>$SYS/#</code> to <code>MQTT_SUBSCRIBE_ALLOW</code> deliberately; publishing to $SYS is always blocked.</p><p><code>uv run mcp-mosquitto</code></p></div>
+<div role="tabpanel" id="p-emqx" aria-labelledby="tab-emqx" class="card" hidden><div class="tab-head"><img src="assets/icons/icon-emqx.svg" alt="" width="48" height="48"><h3>EMQX</h3></div><p>Adds <code>emqx_stats</code>, <code>emqx_list_clients</code>, <code>emqx_list_subscriptions</code>. Create a read-only API key and pass <code>EMQX_API_KEY</code>/<code>EMQX_API_SECRET</code> in the server env.</p><p><code>uv run mcp-emqx</code></p></div>
+<div role="tabpanel" id="p-nanomq" aria-labelledby="tab-nanomq" class="card" hidden><div class="tab-head"><img src="assets/icons/icon-nanomq.svg" alt="" width="48" height="48"><h3>NanoMQ</h3></div><p>Adds <code>nanomq_stats</code>, <code>nanomq_list_clients</code>. Enable the HTTP API (8081) and set <code>NANOMQ_API_USER</code>/<code>NANOMQ_API_PASSWORD</code>.</p><p><code>uv run mcp-nanomq</code></p></div>
+</section>
+
+<section id="diagrams"><h2>Diagrams</h2>
+<div class="gallery"><button type="button"><img src="diagrams/architecture.svg" alt="Architecture diagram" loading="lazy"><span><b>Architecture.</b> Per-broker entry points over shared server, config, security and client modules.</span></button>
+<button type="button"><img src="diagrams/publish-flow.svg" alt="Publish flow diagram" loading="lazy"><span><b>Publish flow.</b> Rate limit, then guards, then a short-lived paho connection.</span></button>
+<button type="button"><img src="diagrams/subscribe-flow.svg" alt="Subscribe flow diagram" loading="lazy"><span><b>Subscribe flow.</b> Allowlist-covered filter, bounded collection, untrusted-flagged output.</span></button>
+<button type="button"><img src="diagrams/security-pipeline.svg" alt="Security pipeline diagram" loading="lazy"><span><b>Security pipeline.</b> Every guard lives server-side, in order.</span></button></div>
+<dialog id="zoom" aria-label="Diagram preview"><img src="" alt=""><p></p><button type="button">Close</button></dialog>
+</section>
+
+<section id="security"><h2>Security by default</h2>
+<ul class="sec-list"><li><b>Deny by default</b><br>Empty publish/subscribe allowlists permit nothing.</li>
+<li><b>Topic allowlists</b><br>No wildcards or $-topics on publish; subscribe filters must be covered by the allowlist, so no # escalation.</li>
+<li><b>Payload caps</b><br>Publish, per-message, message-count and total-response byte budgets bound every call.</li>
+<li><b>Rate limit</b><br>60 tool calls per minute by default, process-wide.</li>
+<li class="warn"><b>Untrusted flagging</b><br>Inbound payloads return as structured data with "untrusted": true, truncated, base64 if binary.</li>
+<li><b>TLS and credentials</b><br>MQTT_TLS=1 with CA/client certs. Credentials come from server env only and are refused over plaintext to non-loopback hosts.</li></ul></section>
+
+<section id="tools"><h2>Tool explorer</h2>
+<label for="q" class="mono" style="font-size:.8rem">Search tools</label><br>
+<input type="search" id="q" placeholder="e.g. stats, retained, clients">
+<div class="pills" role="group" aria-label="Filter by broker"><button type="button" data-cat="all" aria-pressed="true">All</button><button type="button" data-cat="core" aria-pressed="false">Core</button><button type="button" data-cat="mosquitto" aria-pressed="false">Mosquitto</button><button type="button" data-cat="emqx" aria-pressed="false">EMQX</button><button type="button" data-cat="nanomq" aria-pressed="false">NanoMQ</button></div>
+<p id="tool-count" aria-live="polite" class="mono" style="font-size:.8rem;color:var(--muted)">10 tools shown</p>
+<div class="cards">
+<article class="card tool tool-card" data-broker="core mosquitto emqx nanomq"><code>mqtt_publish</code><span><span class="badge">mosquitto</span><span class="badge">emqx</span><span class="badge">nanomq</span></span><p>Publish to an allowlisted, wildcard-free topic. Absent when MQTT_READ_ONLY=1.</p></article>
+<article class="card tool tool-card" data-broker="core mosquitto emqx nanomq"><code>mqtt_subscribe</code><span><span class="badge">mosquitto</span><span class="badge">emqx</span><span class="badge">nanomq</span></span><p>Collect up to N messages for up to T seconds on an allowlisted filter.</p></article>
+<article class="card tool tool-card" data-broker="core mosquitto emqx nanomq"><code>mqtt_get_retained</code><span><span class="badge">mosquitto</span><span class="badge">emqx</span><span class="badge">nanomq</span></span><p>Fetch retained messages matching a filter.</p></article>
+<article class="card tool tool-card" data-broker="core mosquitto emqx nanomq"><code>mqtt_policy</code><span><span class="badge">mosquitto</span><span class="badge">emqx</span><span class="badge">nanomq</span></span><p>Show active limits and allowlists (no secrets).</p></article>
+<article class="card tool tool-card" data-broker="mosquitto"><code>mosquitto_sys_stats</code><span><span class="badge">mosquitto</span></span><p>Read $SYS/broker/#. Needs $SYS/# in the subscribe allowlist.</p></article>
+<article class="card tool tool-card" data-broker="emqx"><code>emqx_stats</code><span><span class="badge">emqx</span></span><p>Read-only EMQX REST API stats.</p></article>
+<article class="card tool tool-card" data-broker="emqx"><code>emqx_list_clients</code><span><span class="badge">emqx</span></span><p>Read-only EMQX connected-client listing.</p></article>
+<article class="card tool tool-card" data-broker="emqx"><code>emqx_list_subscriptions</code><span><span class="badge">emqx</span></span><p>Read-only EMQX subscription listing.</p></article>
+<article class="card tool tool-card" data-broker="nanomq"><code>nanomq_stats</code><span><span class="badge">nanomq</span></span><p>Read-only NanoMQ REST API stats.</p></article>
+<article class="card tool tool-card" data-broker="nanomq"><code>nanomq_list_clients</code><span><span class="badge">nanomq</span></span><p>Read-only NanoMQ client listing.</p></article>
+</div></section>
+
+<section id="examples"><h2>Runnable examples</h2>
+<div class="ex"><h3>Run the Mosquitto server</h3><div class="row"><pre id="ex1"><code>uv sync
+MQTT_HOST=localhost MQTT_PUBLISH_ALLOW='home/cmd/#' MQTT_SUBSCRIBE_ALLOW='home/#' uv run mcp-mosquitto</code></pre><button type="button" data-copy="ex1" aria-label="Copy: Run the Mosquitto server">Copy</button></div></div>
+<div class="ex"><h3>Register with Claude Code</h3><div class="row"><pre id="ex2"><code>claude mcp add mosquitto \
+  -e MQTT_HOST=localhost -e MQTT_PORT=1883 \
+  -e MQTT_PUBLISH_ALLOW='home/commands/#' -e MQTT_SUBSCRIBE_ALLOW='home/#,$SYS/#' \
+  -- uv run --directory "$REPO" mcp-mosquitto</code></pre><button type="button" data-copy="ex2" aria-label="Copy: Register with Claude Code">Copy</button></div></div>
+<div class="ex"><h3>Start test brokers and run tests</h3><div class="row"><pre id="ex3"><code>docker compose -f docker/docker-compose.yml up -d
+uv run pytest
+uv run pytest -m integration</code></pre><button type="button" data-copy="ex3" aria-label="Copy: Start test brokers and run tests">Copy</button></div></div>
+<div class="ex"><h3>Publish/subscribe round-trip demo</h3><div class="row"><pre id="ex4"><code>uv run python examples/01_publish_subscribe.py --broker mosquitto</code></pre><button type="button" data-copy="ex4" aria-label="Copy: Publish/subscribe round-trip demo">Copy</button></div></div>
+<div class="ex"><h3>Secure policy demo</h3><div class="row"><pre id="ex5"><code>uv run python examples/03_secure_policy_demo.py --broker mosquitto</code></pre><button type="button" data-copy="ex5" aria-label="Copy: Secure policy demo">Copy</button></div></div>
+</section>
+
+<section id="docs"><h2>Documentation hub</h2>
+<div class="cards">
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/purpose.md"><h3>Purpose</h3><p>Why these servers exist.</p></a>
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/architecture.md"><h3>Architecture</h3><p>Components and data flow.</p></a>
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/running.md"><h3>Running</h3><p>Configure and launch.</p></a>
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/how-to.md"><h3>How-to</h3><p>Task recipes.</p></a>
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/TESTING.md"><h3>Testing</h3><p>Unit, static and integration tests.</p></a>
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/SECURITY.md"><h3>Security</h3><p>Threat model and guards.</p></a>
+<a class="card" href="https://github.com/bsommers/mcp-mqtt/blob/main/docs/usermanual/README.md"><h3>User manual</h3><p>End-to-end guide.</p></a>
+</div></section>
+</main>
+<footer><div class="wrap"><p><a href="https://github.com/bsommers/mcp-mqtt">github.com/bsommers/mcp-mqtt</a> &middot; Brand: <a href="https://bilism.org">bilism.org</a></p></div></footer>
+<script src="site.js"></script>
+</body>
+</html>

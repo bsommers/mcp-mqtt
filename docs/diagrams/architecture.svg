@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560" role="img" aria-labelledby="t d">
+<title id="t">mcp-mqtt architecture</title><desc id="d">MCP host talks stdio to a guarded FastMCP server that reaches Mosquitto, EMQX or NanoMQ via paho-mqtt and broker HTTP APIs</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#04070f"/><stop offset="0.5" stop-color="#081022"/><stop offset="1" stop-color="#040814"/></linearGradient>
+<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#00e5ff" stop-opacity="0.22"/><stop offset="1" stop-color="#050811" stop-opacity="0"/></radialGradient>
+<pattern id="g1" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-opacity="0.10"/></pattern>
+<pattern id="g2" width="96" height="96" patternUnits="userSpaceOnUse"><rect width="96" height="96" fill="url(#g1)"/><path d="M96 0H0V96" fill="none" stroke="#00e5ff" stroke-width="0.9" stroke-opacity="0.18"/><circle r="1.6" fill="#00e5ff" fill-opacity="0.35"/></pattern>
+<filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="glowS" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#00e5ff"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#ff8a00"/></marker>
+</defs>
+<rect width="1200" height="560" rx="0" fill="url(#bg)"/><rect width="1200" height="560" rx="0" fill="url(#g2)"/>
+<path d="M10 28V10H28M1172 10H1190V28M10 532V550H28M1172 550H1190V532" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="32" y="44" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#f0f6fc" text-anchor="start">mcp-mqtt architecture</text>
+<text x="32" y="68" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#94a3b8" text-anchor="start">stdio MCP server per broker; shared guarded core in src/mcp_mqtt</text>
+<path d="M32 80H1168" stroke="#00e5ff" stroke-opacity="0.3"/>
+<rect x="32" y="190" width="190" height="120" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M32 198V190H40M214 190H222V198M32 302V310H40M214 310H222V302" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="127.0" y="212" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#38bdf8" text-anchor="middle">MCP host</text>
+<text x="127.0" y="234" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">LLM client</text>
+<text x="127.0" y="252" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">Claude, IDE agent</text>
+<text x="127.0" y="270" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">stdio JSON-RPC</text>
+<rect x="270" y="104" width="480" height="420" fill="none" stroke="#00e5ff" stroke-opacity="0.5" stroke-dasharray="6 5"/>
+<text x="286" y="126" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="start">mcp-mqtt-&lt;broker&gt;  (FastMCP, server.py)</text>
+<rect x="290" y="140" width="440" height="96" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M290 148V140H298M722 140H730V148M290 228V236H298M722 236H730V228" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="510.0" y="162" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#00e5ff" text-anchor="middle">Tools (server.py)</text>
+<text x="510.0" y="184" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">mqtt_publish  mqtt_subscribe</text>
+<text x="510.0" y="202" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">mqtt_get_retained  mqtt_policy</text>
+<text x="510.0" y="220" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">mqtt_publish hidden if MQTT_READ_ONLY=1</text>
+<rect x="290" y="258" width="210" height="106" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M290 266V258H298M492 258H500V266M290 356V364H298M492 364H500V356" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="395.0" y="280" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#ff8a00" text-anchor="middle">security.py</text>
+<text x="395.0" y="302" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">topic + allowlist</text>
+<text x="395.0" y="320" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">QoS / payload caps</text>
+<text x="395.0" y="338" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">token-bucket rate limit</text>
+<rect x="520" y="258" width="210" height="106" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M520 266V258H528M722 258H730V266M520 356V364H528M722 364H730V356" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="625.0" y="280" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#38bdf8" text-anchor="middle">config.py</text>
+<text x="625.0" y="302" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">Settings.from_env()</text>
+<text x="625.0" y="320" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">env only, never</text>
+<text x="625.0" y="338" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">from tool inputs</text>
+<rect x="290" y="386" width="210" height="100" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M290 394V386H298M492 386H500V394M290 478V486H298M492 486H500V478" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="395.0" y="408" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#00e5ff" text-anchor="middle">client.py</text>
+<text x="395.0" y="430" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">paho-mqtt, short-lived</text>
+<text x="395.0" y="448" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">connection per call</text>
+<text x="395.0" y="466" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">publish ack wait 10s</text>
+<rect x="520" y="386" width="210" height="100" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M520 394V386H528M722 386H730V394M520 478V486H528M722 486H730V478" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="625.0" y="408" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#38bdf8" text-anchor="middle">brokers/*.py</text>
+<text x="625.0" y="430" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">mosquitto.py emqx.py</text>
+<text x="625.0" y="448" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">nanomq.py: extras()</text>
+<text x="625.0" y="466" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">per-broker tools</text>
+<rect x="950" y="120" width="220" height="96" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M950 128V120H958M1162 120H1170V128M950 208V216H958M1162 216H1170V208" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="1060.0" y="142" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#00e5ff" text-anchor="middle">Mosquitto</text>
+<text x="1060.0" y="164" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">MQTT 1883 / 8883 TLS</text>
+<text x="1060.0" y="182" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">mosquitto_sys_stats</text>
+<text x="1060.0" y="200" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">reads $SYS/broker/#</text>
+<rect x="950" y="244" width="220" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M950 252V244H958M1162 244H1170V252M950 348V356H958M1162 356H1170V348" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="1060.0" y="266" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#00e5ff" text-anchor="middle">EMQX</text>
+<text x="1060.0" y="288" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">MQTT + REST admin API</text>
+<text x="1060.0" y="306" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">emqx_stats</text>
+<text x="1060.0" y="324" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">emqx_list_clients</text>
+<text x="1060.0" y="342" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">emqx_list_subscriptions</text>
+<rect x="950" y="384" width="220" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M950 392V384H958M1162 384H1170V392M950 488V496H958M1162 496H1170V488" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="1060.0" y="406" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#00e5ff" text-anchor="middle">NanoMQ</text>
+<text x="1060.0" y="428" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#e2e8f0" text-anchor="middle">MQTT + HTTP API</text>
+<text x="1060.0" y="446" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">nanomq_stats</text>
+<text x="1060.0" y="464" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#94a3b8" text-anchor="middle">nanomq_list_clients</text>
+<path d="M222 250H270" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<text x="246" y="240" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#38bdf8" text-anchor="middle">stdio</text>
+<path d="M395 486V508H810V168H950" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<text x="870" y="200" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#00e5ff" text-anchor="middle">MQTT</text>
+<path d="M810 300H950" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<path d="M810 440H950" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<path d="M730 436H770" fill="none" stroke="#ff8a00" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#ao)" filter="url(#glowS)"/>
+<path d="M395 364V386" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<path d="M395 236V258" fill="none" stroke="#ff8a00" stroke-width="2" marker-end="url(#ao)" filter="url(#glowS)"/>
+<text x="450" y="250" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#ff8a00" text-anchor="middle">guard first</text>
+<text x="860" y="548" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">extras call broker HTTP APIs (EMQX, NanoMQ)</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t d">
+<title id="t">mcp-mqtt favicon</title><desc id="d">Hex hub with in and out arrows</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#04070f"/><stop offset="0.5" stop-color="#081022"/><stop offset="1" stop-color="#040814"/></linearGradient>
+<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#00e5ff" stop-opacity="0.22"/><stop offset="1" stop-color="#050811" stop-opacity="0"/></radialGradient>
+<pattern id="g1" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-opacity="0.10"/></pattern>
+<pattern id="g2" width="96" height="96" patternUnits="userSpaceOnUse"><rect width="96" height="96" fill="url(#g1)"/><path d="M96 0H0V96" fill="none" stroke="#00e5ff" stroke-width="0.9" stroke-opacity="0.18"/><circle r="1.6" fill="#00e5ff" fill-opacity="0.35"/></pattern>
+<filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="glowS" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#00e5ff"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#ff8a00"/></marker>
+</defs>
+<rect width="64" height="64" rx="12" fill="#050811"/><polygon points="32.0,15.0 46.7,23.5 46.7,40.5 32.0,49.0 17.3,40.5 17.3,23.5" fill="none" stroke="#00e5ff" stroke-width="4" stroke-linejoin="round"/><circle cx="32" cy="32" r="6" fill="#00e5ff"/><path d="M3 32H13M9 27L14 32L9 37" fill="none" stroke="#ff8a00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M51 32H61M56 27L61 32L56 37" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

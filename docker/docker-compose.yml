@@ -1,0 +1,24 @@
+# TEST BROKERS ONLY: anonymous access, bound to loopback (127.0.0.1). Never expose.
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports: ["127.0.0.1:21883:1883"]
+    volumes: ["./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"]
+  emqx:
+    image: emqx/emqx:5.8.0
+    ports: ["127.0.0.1:21884:1883", "127.0.0.1:18083:18083"]
+    environment:
+      EMQX_ALLOW_ANONYMOUS: "true"
+      # Test-only API key (key:secret) bootstrapped from the mounted file.
+      EMQX_API_KEY__BOOTSTRAP_FILE: /opt/emqx/etc/api-keys.txt
+    volumes: ["./emqx/api-keys.txt:/opt/emqx/etc/api-keys.txt:ro"]
+    healthcheck:
+      test: ["CMD", "emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  nanomq:
+    image: emqx/nanomq:0.23.0-slim
+    ports: ["127.0.0.1:21885:1883", "127.0.0.1:8081:8081"]
+    volumes: ["./nanomq/nanomq.conf:/etc/nanomq.conf:ro"]
+    command: ["nanomq", "start", "--conf", "/etc/nanomq.conf"]

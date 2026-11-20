@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" role="img" aria-labelledby="t d">
+<title id="t">Security pipeline</title><desc id="d">Outbound guards: config, read-only, rate limit, topic rules, allowlist, caps. Inbound: filter cover, receive cap, untrusted rendering, bounds</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#04070f"/><stop offset="0.5" stop-color="#081022"/><stop offset="1" stop-color="#040814"/></linearGradient>
+<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#00e5ff" stop-opacity="0.22"/><stop offset="1" stop-color="#050811" stop-opacity="0"/></radialGradient>
+<pattern id="g1" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-opacity="0.10"/></pattern>
+<pattern id="g2" width="96" height="96" patternUnits="userSpaceOnUse"><rect width="96" height="96" fill="url(#g1)"/><path d="M96 0H0V96" fill="none" stroke="#00e5ff" stroke-width="0.9" stroke-opacity="0.18"/><circle r="1.6" fill="#00e5ff" fill-opacity="0.35"/></pattern>
+<filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="glowS" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#00e5ff"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#ff8a00"/></marker>
+</defs>
+<rect width="1200" height="600" rx="0" fill="url(#bg)"/><rect width="1200" height="600" rx="0" fill="url(#g2)"/>
+<path d="M10 28V10H28M1172 10H1190V28M10 572V590H28M1172 590H1190V572" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="32" y="44" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#f0f6fc" text-anchor="start">security pipeline</text>
+<text x="32" y="68" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#94a3b8" text-anchor="start">deny-by-default layers from src/mcp_mqtt/security.py, config.py and client.py</text>
+<path d="M32 80H1168" stroke="#00e5ff" stroke-opacity="0.3"/>
+<text x="32" y="112" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="start">OUTBOUND  (LLM to broker)</text>
+<rect x="32" y="124" width="160" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M32 132V124H40M184 124H192V132M32 208V216H40M184 216H192V208" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="112.0" y="146" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">env-only config</text>
+<text x="112.0" y="168" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">Settings.from_env()</text>
+<text x="112.0" y="185" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">no secrets in tools</text>
+<rect x="226" y="124" width="160" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M226 132V124H234M378 124H386V132M226 208V216H234M378 216H386V208" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="306.0" y="146" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">read-only gate</text>
+<text x="306.0" y="168" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">MQTT_READ_ONLY=1</text>
+<text x="306.0" y="185" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">removes publish</text>
+<path d="M194 170H224" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="420" y="124" width="160" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M420 132V124H428M572 124H580V132M420 208V216H428M572 216H580V208" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="500.0" y="146" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">rate limit</text>
+<text x="500.0" y="168" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">token bucket</text>
+<text x="500.0" y="185" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">60 / min</text>
+<path d="M388 170H418" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="614" y="124" width="160" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M614 132V124H622M766 124H774V132M614 208V216H622M766 216H774V208" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="694.0" y="146" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">topic rules</text>
+<text x="694.0" y="168" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">no ctrl chars, no +#</text>
+<text x="694.0" y="185" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">no $ topics</text>
+<path d="M582 170H612" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="808" y="124" width="160" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M808 132V124H816M960 124H968V132M808 208V216H816M960 216H968V208" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="888.0" y="146" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">allowlist</text>
+<text x="888.0" y="168" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">publish_allow</text>
+<text x="888.0" y="185" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">empty = deny</text>
+<path d="M776 170H806" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="1002" y="124" width="160" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M1002 132V124H1010M1154 124H1162V132M1002 208V216H1010M1154 216H1162V208" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="1082.0" y="146" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">caps</text>
+<text x="1082.0" y="168" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">qos &lt;= 1, retain off</text>
+<text x="1082.0" y="185" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">payload 64 KiB</text>
+<path d="M970 170H1000" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<text x="32" y="262" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="start">TRANSPORT</text>
+<rect x="32" y="274" width="340" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M32 282V274H40M364 274H372V282M32 358V366H40M364 366H372V358" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="202.0" y="296" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">TLS + credentials</text>
+<text x="202.0" y="318" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">MQTT_TLS=1: CA verify by default</text>
+<text x="202.0" y="335" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">plaintext creds to remote refused</text>
+<rect x="430" y="274" width="340" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M430 282V274H438M762 274H770V282M430 358V366H438M762 366H770V358" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="600.0" y="296" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">stateless connections</text>
+<text x="600.0" y="318" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">new paho client per call</text>
+<text x="600.0" y="335" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">random client id, closed in finally</text>
+<rect x="828" y="274" width="340" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M828 282V274H836M1160 274H1168V282M828 358V366H836M1160 366H1168V358" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="998.0" y="296" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">safe errors</text>
+<text x="998.0" y="318" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">GuardError text is LLM-safe</text>
+<text x="998.0" y="335" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">broker errors: class name only</text>
+<text x="32" y="412" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="start">INBOUND  (broker to LLM)</text>
+<rect x="32" y="424" width="188" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M32 432V424H40M212 424H220V432M32 508V516H40M212 516H220V508" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="126.0" y="446" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">subscribe filter</text>
+<text x="126.0" y="468" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">must be covered by</text>
+<text x="126.0" y="485" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">subscribe_allow</text>
+<rect x="268" y="424" width="188" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M268 432V424H276M448 424H456V432M268 508V516H276M448 516H456V508" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="362.0" y="446" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="middle">receive cap</text>
+<text x="362.0" y="468" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">8,192 B kept per</text>
+<text x="362.0" y="485" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">message at receive</text>
+<path d="M222 470H266" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="504" y="424" width="188" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M504 432V424H512M684 424H692V432M504 508V516H512M684 516H692V508" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="598.0" y="446" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="middle">render_inbound</text>
+<text x="598.0" y="468" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">utf8 or base64</text>
+<text x="598.0" y="485" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">untrusted: true</text>
+<path d="M458 470H502" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="740" y="424" width="188" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M740 432V424H748M920 424H928V432M740 508V516H748M920 516H928V508" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="834.0" y="446" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="middle">bound_messages</text>
+<text x="834.0" y="468" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">max 100 messages</text>
+<text x="834.0" y="485" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">32 KiB response</text>
+<path d="M694 470H738" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="976" y="424" width="188" height="92" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M976 432V424H984M1156 424H1164V432M976 508V516H984M1156 516H1164V508" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="1070.0" y="446" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">LLM</text>
+<text x="1070.0" y="468" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">content, never</text>
+<text x="1070.0" y="485" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">instructions</text>
+<path d="M930 470H974" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<text x="32" y="560" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="start">orange = guard that can reject the request; cyan = bounding; sky = boundary</text>
+</svg>

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" width="1200" height="470" role="img" aria-labelledby="t d">
+<title id="t">Publish flow</title><desc id="d">mqtt_publish passes rate limit, topic, allowlist, qos and retain, payload checks, then publishes via a short-lived paho connection</desc>
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#04070f"/><stop offset="0.5" stop-color="#081022"/><stop offset="1" stop-color="#040814"/></linearGradient>
+<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#00e5ff" stop-opacity="0.22"/><stop offset="1" stop-color="#050811" stop-opacity="0"/></radialGradient>
+<pattern id="g1" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#38bdf8" stroke-width="0.5" stroke-opacity="0.10"/></pattern>
+<pattern id="g2" width="96" height="96" patternUnits="userSpaceOnUse"><rect width="96" height="96" fill="url(#g1)"/><path d="M96 0H0V96" fill="none" stroke="#00e5ff" stroke-width="0.9" stroke-opacity="0.18"/><circle r="1.6" fill="#00e5ff" fill-opacity="0.35"/></pattern>
+<filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="glowS" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#00e5ff"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="#ff8a00"/></marker>
+</defs>
+<rect width="1200" height="470" rx="0" fill="url(#bg)"/><rect width="1200" height="470" rx="0" fill="url(#g2)"/>
+<path d="M10 28V10H28M1172 10H1190V28M10 442V460H28M1172 460H1190V442" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="32" y="44" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="700" fill="#f0f6fc" text-anchor="start">publish flow: mqtt_publish</text>
+<text x="32" y="68" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="400" fill="#94a3b8" text-anchor="start">every step must pass or the call returns {"ok": false, "error": ...}</text>
+<path d="M32 80H1168" stroke="#00e5ff" stroke-opacity="0.3"/>
+<rect x="32" y="110" width="188" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M32 118V110H40M212 110H220V118M32 214V222H40M212 222H220V214" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="126.0" y="132" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">1 rate limit</text>
+<text x="126.0" y="154" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">RateLimiter.check()</text>
+<text x="126.0" y="171" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">token bucket</text>
+<text x="126.0" y="188" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">60 calls/min</text>
+<rect x="268" y="110" width="188" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M268 118V110H276M448 110H456V118M268 214V222H276M448 222H456V214" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="362.0" y="132" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">2 topic</text>
+<text x="362.0" y="154" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">validate_publish_topic</text>
+<text x="362.0" y="171" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">no + # or $SYS</text>
+<text x="362.0" y="188" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">256 B, 16 levels</text>
+<path d="M222 166H266" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="504" y="110" width="188" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M504 118V110H512M684 110H692V118M504 214V222H512M684 222H692V214" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="598.0" y="132" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">3 allowlist</text>
+<text x="598.0" y="154" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">topic_matches()</text>
+<text x="598.0" y="171" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">MQTT_PUBLISH_ALLOW</text>
+<text x="598.0" y="188" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">empty = deny all</text>
+<path d="M458 166H502" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="740" y="110" width="188" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M740 118V110H748M920 110H928V118M740 214V222H748M920 222H928V214" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="834.0" y="132" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">4 qos + retain</text>
+<text x="834.0" y="154" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">validate_qos 0..max_qos</text>
+<text x="834.0" y="171" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">default max_qos = 1</text>
+<text x="834.0" y="188" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">retain: ALLOW_RETAIN</text>
+<path d="M694 166H738" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="976" y="110" width="188" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M976 118V110H984M1156 110H1164V118M976 214V222H984M1156 222H1164V214" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="1070.0" y="132" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">5 payload</text>
+<text x="1070.0" y="154" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">encode_publish_payload</text>
+<text x="1070.0" y="171" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">utf8 | base64</text>
+<text x="1070.0" y="188" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">cap 65,536 B decoded</text>
+<path d="M930 166H974" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<rect x="32" y="290" width="250" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M32 298V290H40M274 290H282V298M32 394V402H40M274 402H282V394" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="157.0" y="312" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="middle">client.publish</text>
+<text x="157.0" y="334" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">short-lived paho connection</text>
+<text x="157.0" y="351" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">wait_for_publish 10s</text>
+<text x="157.0" y="368" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">disconnect in finally</text>
+<rect x="350" y="290" width="250" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#38bdf8" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M350 298V290H358M592 290H600V298M350 394V402H358M592 402H600V394" fill="none" stroke="#38bdf8" stroke-width="2"/>
+<text x="475.0" y="312" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">broker</text>
+<text x="475.0" y="334" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">Mosquitto / EMQX / NanoMQ</text>
+<text x="475.0" y="351" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">QoS 0 or 1 delivery</text>
+<rect x="668" y="290" width="250" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#00e5ff" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M668 298V290H676M910 290H918V298M668 394V402H676M910 402H918V394" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<text x="793.0" y="312" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#00e5ff" text-anchor="middle">result JSON</text>
+<text x="793.0" y="334" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">{ok:true, published, topic,</text>
+<text x="793.0" y="351" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">bytes, qos, retain}</text>
+<rect x="950" y="290" width="218" height="112" fill="#0b1428" fill-opacity="0.92" stroke="#ff8a00" stroke-width="1.5" filter="url(#glowS)"/>
+<path d="M950 298V290H958M1160 290H1168V298M950 394V402H958M1160 402H1168V394" fill="none" stroke="#ff8a00" stroke-width="2"/>
+<text x="1059.0" y="312" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#ff8a00" text-anchor="middle">denied</text>
+<text x="1059.0" y="334" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#e2e8f0" text-anchor="middle">GuardError / BrokerError</text>
+<text x="1059.0" y="351" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">{ok:false, error}</text>
+<text x="1059.0" y="368" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="11" font-weight="400" fill="#94a3b8" text-anchor="middle">logged as warning</text>
+<path d="M1000 222V256H157V290" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<text x="600" y="250" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#00e5ff" text-anchor="middle">all five pass</text>
+<path d="M282 346H350" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<path d="M600 346H668" fill="none" stroke="#00e5ff" stroke-width="2" marker-end="url(#ac)" filter="url(#glowS)"/>
+<path d="M475 402V436H1059V402" fill="none" stroke="#ff8a00" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#ao)" filter="url(#glowS)"/>
+<text x="800" y="430" font-family="ui-monospace, 'Cascadia Code', 'Fira Code', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#ff8a00" text-anchor="middle">any failure</text>
+</svg>

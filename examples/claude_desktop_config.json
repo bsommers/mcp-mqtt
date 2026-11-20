@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "mosquitto": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/mcp-mqtt", "mcp-mosquitto"],
+      "env": {
+        "MQTT_HOST": "localhost", "MQTT_PORT": "1883",
+        "MQTT_PUBLISH_ALLOW": "home/commands/#",
+        "MQTT_SUBSCRIBE_ALLOW": "home/#,$SYS/#"
+      }
+    },
+    "emqx": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/mcp-mqtt", "mcp-emqx"],
+      "env": {
+        "MQTT_HOST": "localhost", "MQTT_PORT": "1883",
+        "MQTT_PUBLISH_ALLOW": "home/commands/#",
+        "MQTT_SUBSCRIBE_ALLOW": "home/#"
+      }
+    },
+    "nanomq": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/mcp-mqtt", "mcp-nanomq"],
+      "env": {
+        "MQTT_HOST": "localhost", "MQTT_PORT": "1883",
+        "MQTT_PUBLISH_ALLOW": "home/commands/#",
+        "MQTT_SUBSCRIBE_ALLOW": "home/#",
+        "MQTT_READ_ONLY": "0"
+      }
+    }
+  }
+}
