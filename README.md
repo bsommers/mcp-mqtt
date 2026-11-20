@@ -1,3 +1,24 @@
+<p align="center">
+  <img src="docs/assets/logo.png" alt="mcp-mqtt: guarded MCP servers for Mosquitto, EMQX and NanoMQ" width="900">
+</p>
+
+<p align="center">
+  <a href="https://bsommers.github.io/mcp-mqtt/"><img alt="site" src="https://img.shields.io/badge/site-live-00e5ff?style=flat-square&labelColor=050811"></a>
+  <img alt="tests" src="https://img.shields.io/badge/tests-274%20passing-00e5ff?style=flat-square&labelColor=050811">
+  <img alt="brokers" src="https://img.shields.io/badge/brokers-Mosquitto%20%C2%B7%20EMQX%20%C2%B7%20NanoMQ-38bdf8?style=flat-square&labelColor=050811">
+  <img alt="security" src="https://img.shields.io/badge/security-deny--by--default-ff8a00?style=flat-square&labelColor=050811">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-38bdf8?style=flat-square&labelColor=050811">
+</p>
+
+<p align="center">
+  <img src="docs/assets/icons/icon-publish.svg" width="48" alt="publish" title="publish">
+  <img src="docs/assets/icons/icon-subscribe.svg" width="48" alt="subscribe" title="subscribe">
+  <img src="docs/assets/icons/icon-security.svg" width="48" alt="security" title="security">
+  <img src="docs/assets/icons/icon-mosquitto.svg" width="48" alt="Mosquitto" title="Mosquitto">
+  <img src="docs/assets/icons/icon-emqx.svg" width="48" alt="EMQX" title="EMQX">
+  <img src="docs/assets/icons/icon-nanomq.svg" width="48" alt="NanoMQ" title="NanoMQ">
+</p>
+
 # mcp-mqtt
 
 Hardened [MCP](https://modelcontextprotocol.io) servers that let an LLM agent publish to and subscribe on
