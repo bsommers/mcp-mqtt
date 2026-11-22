@@ -29,10 +29,21 @@ from .security import (
 
 log = logging.getLogger("mcp_mqtt")
 
+Extras = Callable[[FastMCP, Settings, RateLimiter], None]
+
+
+class JsonFormatter(logging.Formatter):
+    """One valid JSON object per line; json.dumps escapes quotes/newlines so log lines can't be forged."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        return json.dumps({"ts": self.formatTime(record), "lvl": record.levelname,
+                           "msg": record.getMessage()})
+
 
 def _setup_logging() -> None:
-    logging.basicConfig(stream=sys.stderr, level=logging.INFO,
-                        format='{"ts":"%(asctime)s","lvl":"%(levelname)s","msg":"%(message)s"}')
+    h = logging.StreamHandler(sys.stderr)
+    h.setFormatter(JsonFormatter())
+    logging.basicConfig(level=logging.INFO, handlers=[h], force=True)
 
 
 def _err(msg: str) -> str:
@@ -42,7 +53,7 @@ def _err(msg: str) -> str:
 def build_server(
     name: str,
     settings: Settings,
-    extras: Callable[[FastMCP, Settings, RateLimiter], None] | None = None,
+    extras: Extras | None = None,
 ) -> FastMCP:
     mcp = FastMCP(name)
     limiter = RateLimiter(settings.rate_limit_per_minute)
@@ -81,7 +92,7 @@ def build_server(
             n = max(1, min(int(max_messages), settings.max_messages))
             w = max(0.1, min(float(wait_seconds), settings.max_wait_seconds))
             raw = await asyncio.to_thread(client.collect, settings, f, q, n, w)
-            msgs = [render_inbound(t, p, settings, r, mq) for t, p, r, mq in raw]
+            msgs = [render_inbound(m.topic, m.payload, settings, m.retained, m.qos, m.size) for m in raw]
             out, cut = bound_messages(msgs, settings)
             log.info("subscribe filter=%s got=%d", f, len(out))
             return json.dumps({"ok": True, "filter": f, "count": len(out), "truncated": cut,
@@ -97,8 +108,9 @@ def build_server(
             limiter.check()
             f = validate_subscribe_filter(topic_filter, settings)
             w = max(0.1, min(float(wait_seconds), settings.max_wait_seconds))
-            raw = [m for m in await asyncio.to_thread(client.collect, settings, f, 0, settings.max_messages, w) if m[2]]
-            msgs = [render_inbound(t, p, settings, r, mq) for t, p, r, mq in raw]
+            got = await asyncio.to_thread(client.collect, settings, f, 0, settings.max_messages, w, True)
+            raw = [m for m in got if m[2]]
+            msgs = [render_inbound(m.topic, m.payload, settings, m.retained, m.qos, m.size) for m in raw]
             out, cut = bound_messages(msgs, settings)
             return json.dumps({"ok": True, "filter": f, "count": len(out), "truncated": cut,
                                "messages": out})
@@ -106,12 +118,14 @@ def build_server(
             return _err(str(exc))
 
     @mcp.tool()
-    def mqtt_policy() -> str:
+    async def mqtt_policy() -> str:
         """Show the active limits and allowlists (no secrets)."""
         return json.dumps({
             "broker": name, "read_only": settings.read_only,
             "publish_allow": settings.publish_allow, "subscribe_allow": settings.subscribe_allow,
             "max_publish_bytes": settings.max_publish_bytes, "max_messages": settings.max_messages,
+            "max_message_bytes": settings.max_message_bytes, "max_response_bytes": settings.max_response_bytes,
+            "max_topic_length": settings.max_topic_length, "max_topic_levels": settings.max_topic_levels,
             "max_wait_seconds": settings.max_wait_seconds, "max_qos": settings.max_qos,
             "allow_retain": settings.allow_retain, "tls": settings.tls,
             "rate_limit_per_minute": settings.rate_limit_per_minute,
@@ -122,7 +136,7 @@ def build_server(
     return mcp
 
 
-def run(name: str, extras=None) -> None:
+def run(name: str, extras: Extras | None = None) -> None:
     _setup_logging()
     settings = Settings.from_env()
     build_server(name, settings, extras).run()  # stdio transport
