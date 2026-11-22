@@ -16,8 +16,12 @@ Python >= 3.11, [uv](https://docs.astral.sh/uv/), and a reachable MQTT broker (M
 
 ```bash
 git clone <this repository> mcp-mqtt && cd mcp-mqtt
-uv sync
+uv sync                # Mosquitto profile
+uv sync --extra emqx   # EMQX REST tools need httpx (extra `emqx`)
+uv sync --extra nanomq # NanoMQ REST tools need httpx (extra `nanomq`)
 ```
+
+The `mcp-emqx` and `mcp-nanomq` entry points fail at import with an install hint if `httpx` is missing. `mcp-mosquitto` needs no extras.
 
 Console scripts installed: `mcp-mosquitto`, `mcp-emqx`, `mcp-nanomq`.
 

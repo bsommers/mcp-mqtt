@@ -9,6 +9,8 @@
 | `tests/test_security.py` | unit | Topic validation, allowlist matching/coverage, QoS, payload encode/caps, rate limiter, `render_inbound`, `bound_messages` |
 | `tests/test_config.py` | unit | Env parsing, defaults, startup validation |
 | `tests/test_server_unit.py` | unit | Tool handlers with the broker client stubbed |
+| `tests/test_client.py` | unit | `client.py` against a fake paho client: connect/TLS errors, cleanup, `retained_only`, true message size |
+| `tests/test_rest.py` | unit | EMQX/NanoMQ REST helper via `httpx.MockTransport`: status, truncation, https guard, sanitising |
 | `tests/test_static_gates.py` | static | AST gates: no `print()` in `src/` (MCP-008); no credential-named tool parameters (MCP-001) |
 | `tests/test_integration.py` | integration (`-m integration`) | Spawns the real stdio server per broker and runs publish/subscribe round trips, retained, denials, oversize, rate limit, `mosquitto_sys_stats` |
 
@@ -24,14 +26,15 @@ uv run pytest                                          # everything; integration
 uv run pytest -m "not integration"                     # unit + static only
 uv run pytest -m integration                           # integration only
 uv run ruff check .
-uv run mypy src
+uv run mypy src --strict
+uv run pytest -m "not integration" --cov=src/mcp_mqtt --cov-branch   # CI gate: >= 85%
 ```
 
-At the time of writing, `uv run pytest` with all three brokers up reports `269 passed`; `mypy src` is clean. Treat these numbers as a snapshot, not a contract.
+Test counts are generated, not hand-edited: run `uv run python scripts/update_counts.py` to refresh the README badge and site figure. CI (`.github/workflows/ci.yml`) runs ruff, `mypy --strict`, the unit suite with an 85% branch-coverage gate, `pip-audit`, and the docker integration job.
 
-## Coverage caveat
+## Coverage
 
-`uv run pytest --cov=mcp_mqtt` reports roughly 56% overall, and 0% for `brokers/*.py`, 19% for `client.py`. That figure is misleading: the integration tests execute the server in a **subprocess** over stdio, so the coverage tool does not see those lines. `config.py` and `security.py` (the guard logic) report 100% from unit tests; `server.py` about 94%. Judge broker/client code by the integration results, not by the coverage number.
+Unit tests alone reach about 98% line+branch coverage of `src/mcp_mqtt`: `client.py` is tested against a fake paho client and the REST helpers via `httpx.MockTransport`. The integration tests run the server in a subprocess over stdio, so they add confidence but not coverage numbers.
 
 ## Test brokers
 

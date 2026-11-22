@@ -12,7 +12,7 @@
 
 ```bash
 git clone <this repository> mcp-mqtt && cd mcp-mqtt
-uv sync
+uv sync                  # add --extra emqx or --extra nanomq for the REST tools
 ```
 
 This installs three console scripts (from `pyproject.toml`): `mcp-mosquitto`, `mcp-emqx`, `mcp-nanomq`. Each can also be started as `python -m mcp_mqtt.brokers.<mosquitto|emqx|nanomq>`.
@@ -39,7 +39,10 @@ It then waits on stdin for JSON-RPC. Logs are JSON lines on stderr. With no allo
 | non-integer numeric var | `MQTT_PORT must be an integer` (name varies) |
 | `MQTT_TLS_INSECURE=1` without `MQTT_TLS=1` | `MQTT_TLS_INSECURE requires MQTT_TLS=1` |
 | password set, no TLS, host not `localhost`/`127.0.0.1`/`::1` | `refusing to send credentials over plaintext to a non-loopback host; set MQTT_TLS=1` |
-| any of the byte/count/rate limits < 1 | `limits must be >= 1` |
+| any of the byte/count/topic/rate limits < 1 | `limits must be >= 1` |
+| unrecognised value for a boolean switch | `MQTT_READ_ONLY must be one of 1/true/yes/on or 0/false/no/off` (name varies) |
+| port outside 1..65535 | `MQTT_PORT must be 1..65535` |
+| `MQTT_MAX_MESSAGE_BYTES` > `MQTT_MAX_RESPONSE_BYTES` | `MQTT_MAX_MESSAGE_BYTES must be <= MQTT_MAX_RESPONSE_BYTES` |
 
 There is no CLI flag surface: all configuration is environment variables. See the [configuration reference](usermanual/02-configuration-reference.md) for every variable.
 

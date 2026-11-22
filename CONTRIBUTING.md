@@ -12,7 +12,8 @@ docker compose -f docker/docker-compose.yml up -d      # optional: integration t
 
 ```bash
 uv run ruff check .
-uv run mypy src
+uv run mypy src --strict
+uv run python scripts/update_counts.py   # refresh README/site test counts
 uv run pytest
 ```
 

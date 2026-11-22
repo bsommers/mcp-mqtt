@@ -86,20 +86,21 @@ rules. The MQTT-specific guards (topic allowlists, payload caps, rate limit, unt
 |---|---|---|
 | `MQTT_HOST` / `MQTT_PORT` | `localhost` / `1883` (`8883` with TLS) | Broker address |
 | `MQTT_USERNAME` / `MQTT_PASSWORD` | unset | Credentials (refused over plaintext to non-loopback hosts) |
-| `MQTT_TLS` | off | `1` enables TLS |
+| `MQTT_TLS` | off | `1`/`true`/`yes`/`on` enables TLS. All switches are strict: `0/false/no/off` or empty = off, anything else is a startup error |
 | `MQTT_TLS_CA` / `MQTT_TLS_CERT` / `MQTT_TLS_KEY` | unset | CA and client certificate files |
-| `MQTT_TLS_INSECURE` | off | `1` disables certificate and hostname verification (requires `MQTT_TLS=1`) |
+| `MQTT_TLS_INSECURE` | off | `1` disables certificate and hostname verification (requires `MQTT_TLS=1`; logs a warning at startup) |
 | `MQTT_PUBLISH_ALLOW` | empty (deny all) | Comma-separated topic patterns that may be published |
 | `MQTT_SUBSCRIBE_ALLOW` | empty (deny all) | Comma-separated filters that may be subscribed; requested filters must be covered |
 | `MQTT_READ_ONLY` | off | `1` removes `mqtt_publish` |
 | `MQTT_ALLOW_RETAIN` | off | `1` permits retained publishes |
-| `MQTT_MAX_QOS` | `1` | Highest QoS (0-2) |
+| `MQTT_MAX_QOS` | `1` | Highest QoS (0-2); out-of-range values are clamped with a warning |
 | `MQTT_MAX_PUBLISH_BYTES` | `65536` | Publish payload cap |
 | `MQTT_MAX_MESSAGE_BYTES` | `8192` | Per inbound message cap returned to the LLM |
 | `MQTT_MAX_MESSAGES` | `100` | Messages per subscribe call |
 | `MQTT_MAX_RESPONSE_BYTES` | `32768` | Total tool response budget |
+| `MQTT_MAX_WAIT_SECONDS` / `MQTT_MAX_TOPIC_LENGTH` / `MQTT_MAX_TOPIC_LEVELS` | `30` / `256` / `16` | Longest wait per call, topic bytes, topic levels |
 | `MQTT_RATE_LIMIT_PER_MINUTE` | `60` | Tool calls per minute (process-wide) |
-| `EMQX_API_URL`, `EMQX_API_KEY`, `EMQX_API_SECRET` | `http://localhost:18083` | EMQX REST access (server env only) |
+| `EMQX_API_URL`, `EMQX_API_KEY`, `EMQX_API_SECRET` | `http://localhost:18083` | EMQX REST access (server env only; plain `http://` only to loopback, else use `https://`) |
 | `NANOMQ_API_URL`, `NANOMQ_API_USER`, `NANOMQ_API_PASSWORD` | `http://localhost:8081` | NanoMQ REST access (server env only) |
 
 ## Security model
@@ -110,12 +111,14 @@ rules. The MQTT-specific guards (topic allowlists, payload caps, rate limit, unt
 - **Bounds**: payload size, message count, per-message size, total response size, wait time, topic length/depth, QoS, rate limit.
 - **Inbound payloads are untrusted**: returned in a structured field with `"untrusted": true`, truncated, and base64-encoded if binary. Treat as data, never instructions.
 - **stdout is protocol-only**; logging goes to stderr as JSON.
-- Tool handlers for publish/subscribe/retained/sys-stats are async and run broker I/O in worker threads, so a waiting `mqtt_subscribe` does not block other calls. (The EMQX/NanoMQ REST helpers and `mqtt_policy` are synchronous; REST calls block for at most 5 s.)
+- All tool handlers are async and run broker and REST I/O in worker threads, so a waiting call does not block other calls.
+- EMQX/NanoMQ REST results are broker data any client can influence: they carry `"untrusted": true` and are bounded (string length, list size, depth).
 
 ## Quickstart
 
 ```bash
-uv sync
+uv sync                      # Mosquitto only
+uv sync --extra emqx         # or --extra nanomq: adds httpx for the REST helpers
 MQTT_HOST=localhost MQTT_PUBLISH_ALLOW='home/cmd/#' MQTT_SUBSCRIBE_ALLOW='home/#' uv run mcp-mosquitto
 ```
 

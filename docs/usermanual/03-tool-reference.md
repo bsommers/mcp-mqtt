@@ -48,7 +48,7 @@ Message fields: `encoding` is `utf8` or `base64` (binary or control characters);
 
 ## mqtt_get_retained
 
-Parameters: `topic_filter` (required), `wait_seconds` (default `2.0`, 0.1..30). Subscribes at QoS 0 and returns only messages flagged retained.
+Parameters: `topic_filter` (required), `wait_seconds` (default `2.0`, 0.1..30). Subscribes at QoS 0 and returns only messages flagged retained. The call ends early at the first live (non-retained) message or once the retained burst has been quiet for 0.5 s, so busy topics do not crowd out retained messages.
 
 ```json
 {"topic_filter": "demo/#", "wait_seconds": 1}

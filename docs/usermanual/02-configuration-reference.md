@@ -20,10 +20,10 @@ All configuration is environment variables read once at startup (`src/mcp_mqtt/c
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `MQTT_TLS` | off | `1` enables TLS with certificate verification |
+| `MQTT_TLS` | off | `1`/`true`/`yes`/`on` enables TLS with certificate verification |
 | `MQTT_TLS_CA` | unset | CA bundle path (else system defaults) |
 | `MQTT_TLS_CERT`, `MQTT_TLS_KEY` | unset | Client certificate and key (mutual TLS) |
-| `MQTT_TLS_INSECURE` | off | `1` disables certificate verification and hostname check; requires `MQTT_TLS=1` |
+| `MQTT_TLS_INSECURE` | off | Truthy value disables certificate verification and hostname check; requires `MQTT_TLS=1`; logs a startup warning |
 
 ## Authorization
 
@@ -31,9 +31,9 @@ All configuration is environment variables read once at startup (`src/mcp_mqtt/c
 |---|---|---|
 | `MQTT_PUBLISH_ALLOW` | empty (deny all) | Comma-separated topic patterns (`+`, `#` allowed in the pattern) that may be published to |
 | `MQTT_SUBSCRIBE_ALLOW` | empty (deny all) | Comma-separated filters; a requested filter must be fully covered by one entry |
-| `MQTT_READ_ONLY` | off | `1` does not register `mqtt_publish` |
-| `MQTT_ALLOW_RETAIN` | off | `1` permits `retain=true` publishes |
-| `MQTT_MAX_QOS` | `1` | Highest accepted QoS; clamped to 0..2 |
+| `MQTT_READ_ONLY` | off | Truthy value does not register `mqtt_publish` |
+| `MQTT_ALLOW_RETAIN` | off | Truthy value permits `retain=true` publishes |
+| `MQTT_MAX_QOS` | `1` | Highest accepted QoS; clamped to 0..2 with a startup warning |
 
 ## Limits
 
@@ -43,9 +43,16 @@ All configuration is environment variables read once at startup (`src/mcp_mqtt/c
 | `MQTT_MAX_MESSAGE_BYTES` | `8192` | Max bytes of each inbound message returned (rest truncated) |
 | `MQTT_MAX_MESSAGES` | `100` | Max messages per subscribe/retained/sys call |
 | `MQTT_MAX_RESPONSE_BYTES` | `32768` | Total response budget; also the REST helper body cap |
+| `MQTT_MAX_WAIT_SECONDS` | `30` | Upper bound for any `wait_seconds` (> 0, <= 3600) |
+| `MQTT_MAX_TOPIC_LENGTH` | `256` | Max topic/filter bytes |
+| `MQTT_MAX_TOPIC_LEVELS` | `16` | Max `/`-separated levels |
 | `MQTT_RATE_LIMIT_PER_MINUTE` | `60` | Token bucket size and refill per minute, shared by all tools in the process |
 
-The five limits must be >= 1 or startup fails.
+The integer limits must be >= 1, `MQTT_PORT` must be 1..65535 and `MQTT_MAX_MESSAGE_BYTES` must be <= `MQTT_MAX_RESPONSE_BYTES`, or startup fails.
+
+## Boolean switches
+
+`MQTT_TLS`, `MQTT_TLS_INSECURE`, `MQTT_READ_ONLY` and `MQTT_ALLOW_RETAIN` accept `1/true/yes/on` (true) and `0/false/no/off` or empty (false), case-insensitive. Any other value (for example `ture`) stops startup with `<NAME> must be one of ...`. Earlier versions treated everything except the literal `1` as off, which silently ignored `MQTT_READ_ONLY=true`.
 
 ## EMQX REST
 
@@ -53,7 +60,7 @@ Read by `mcp-emqx` only.
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `EMQX_API_URL` | `http://localhost:18083` | Base URL (http/https only) |
+| `EMQX_API_URL` | `http://localhost:18083` | Base URL; `https://` anywhere, plain `http://` only for `localhost`/`127.0.0.1`/`::1` (credentials are never sent in cleartext off-loopback) |
 | `EMQX_API_KEY` | unset | API key (used as basic-auth user) |
 | `EMQX_API_SECRET` | unset | API secret; both required or tools return an error |
 

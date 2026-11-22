@@ -18,7 +18,7 @@ The servers follow the secure-design-patterns MCP rules, plus MQTT-specific addi
 | MQTT: payload, QoS, retain, rate caps | `encode_publish_payload`, `validate_qos`, `MQTT_ALLOW_RETAIN`, `RateLimiter` | same |
 | MQTT: inbound payload is untrusted | `"untrusted": true`, truncation, base64 for binary/control chars | same |
 | Transport: no password over plaintext off-loopback | `Settings.validate()` | `test_config.py` |
-| REST helpers: fixed operator URL, GET only, no redirects, capped body, 5 s timeout | `brokers/emqx.py`, `brokers/nanomq.py` | exercised manually against the Docker brokers |
+| REST helpers: fixed operator URL, GET only, no redirects, capped body, 5 s timeout, no cleartext credentials off-loopback, results flagged `untrusted` and bounded | `brokers/_rest.py` | `test_rest.py` (httpx.MockTransport) |
 
 ## Prompt injection from broker payloads
 
