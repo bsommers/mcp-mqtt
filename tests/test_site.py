@@ -76,3 +76,10 @@ def test_counts_match_repo():
     assert m and int(m.group(1)) == len(tools)
     t = re.search(r"<b>(\d+)</b>tests", html)
     assert t and abs(int(t.group(1)) - tests) <= 10
+
+
+def test_readme_badge_count_not_stale():
+    # regenerate with: uv run python scripts/update_counts.py
+    badge = re.search(r"tests-(\d+)%20passing", (ROOT / "README.md").read_text())
+    site = re.search(r"<b>(\d+)</b>tests", _html())
+    assert badge and site and badge.group(1) == site.group(1)

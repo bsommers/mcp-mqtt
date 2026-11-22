@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://bsommers.github.io/mcp-mqtt/"><img alt="site" src="https://img.shields.io/badge/site-live-00e5ff?style=flat-square&labelColor=050811"></a>
-  <img alt="tests" src="https://img.shields.io/badge/tests-274%20passing-00e5ff?style=flat-square&labelColor=050811">
+  <img alt="tests" src="https://img.shields.io/badge/tests-387%20passing-00e5ff?style=flat-square&labelColor=050811">
   <img alt="brokers" src="https://img.shields.io/badge/brokers-Mosquitto%20%C2%B7%20EMQX%20%C2%B7%20NanoMQ-38bdf8?style=flat-square&labelColor=050811">
   <img alt="security" src="https://img.shields.io/badge/security-deny--by--default-ff8a00?style=flat-square&labelColor=050811">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-38bdf8?style=flat-square&labelColor=050811">
