@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import base64
+import json
 import threading
 import time
 from dataclasses import dataclass
+from typing import Any
 
 from .config import Settings
 
@@ -28,13 +30,12 @@ def _check_common(topic: str, s: Settings) -> list[str]:
 
 def validate_publish_topic(topic: str, s: Settings) -> str:
     """Publish topics: no wildcards, no $-reserved topics (e.g. $SYS), must match allowlist."""
-    levels = _check_common(topic, s)
+    _check_common(topic, s)
     if "+" in topic or "#" in topic:
         raise GuardError("wildcards are not allowed in publish topics")
     if topic.startswith("$"):
         raise GuardError("publishing to $-prefixed (broker reserved) topics is not allowed")
-    if "" in levels[:-1] and topic != "/":
-        pass  # empty levels are legal MQTT; allowlist still applies
+    # empty topic levels are legal MQTT; the allowlist still applies
     if not any(topic_matches(p, topic) for p in s.publish_allow):
         raise GuardError("topic not permitted by MQTT_PUBLISH_ALLOW")
     return topic
@@ -137,16 +138,29 @@ class RateLimiter:
             self._tokens -= 1
 
 
-def render_inbound(topic: str, payload: bytes, s: Settings, retained: bool = False, qos: int = 0) -> dict:
+def _utf8_prefix(chunk: bytes) -> str:
+    """Decode a possibly truncated chunk, dropping a trailing partial UTF-8 sequence (max 3 bytes)."""
+    try:
+        return chunk.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        # only a partial sequence at the very end is forgivable; anything earlier is binary
+        if exc.end == len(chunk) and len(chunk) - exc.start <= 3 and exc.reason == "unexpected end of data":
+            return chunk[: exc.start].decode("utf-8")
+        raise
+
+
+def render_inbound(topic: str, payload: bytes, s: Settings, retained: bool = False, qos: int = 0,
+                   size: int | None = None) -> dict[str, Any]:
     """Shape an inbound broker message for the LLM.
 
     Payloads are UNTRUSTED data (possible prompt injection): they are bounded, never
     interpreted, and always returned in a structured field flagged as untrusted.
     """
-    truncated = len(payload) > s.max_message_bytes
+    total = max(len(payload), size or 0)  # `size` is the true wire size when payload was pre-capped
+    truncated = total > s.max_message_bytes
     chunk = payload[: s.max_message_bytes]
     try:
-        text, enc = chunk.decode("utf-8"), "utf8"
+        text, enc = (_utf8_prefix(chunk) if truncated else chunk.decode("utf-8")), "utf8"
         if any(ord(c) < 0x20 and c not in "\n\r\t" for c in text):
             raise UnicodeDecodeError("utf-8", b"", 0, 1, "control")
     except UnicodeDecodeError:
@@ -155,7 +169,7 @@ def render_inbound(topic: str, payload: bytes, s: Settings, retained: bool = Fal
         "topic": topic[: s.max_topic_length],
         "payload": text,
         "encoding": enc,
-        "bytes": len(payload),
+        "bytes": total,
         "truncated": truncated,
         "retained": retained,
         "qos": qos,
@@ -163,11 +177,10 @@ def render_inbound(topic: str, payload: bytes, s: Settings, retained: bool = Fal
     }
 
 
-def bound_messages(msgs: list[dict], s: Settings) -> tuple[list[dict], bool]:
+def bound_messages(msgs: list[dict[str, Any]], s: Settings) -> tuple[list[dict[str, Any]], bool]:
     """Dual-axis bounding (MCP-003): cardinality first, then total byte budget."""
-    import json
-
-    out, size, cut = [], 0, False
+    out: list[dict[str, Any]] = []
+    size, cut = 0, False
     for m in msgs[: s.max_messages]:
         sz = len(json.dumps(m))
         if size + sz > s.max_response_bytes:

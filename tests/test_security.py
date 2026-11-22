@@ -376,11 +376,39 @@ def test_render_whitespace_controls_allowed():
     assert r["encoding"] == "utf8"
 
 
-def test_render_truncation_mid_multibyte_falls_back_to_base64():
+def test_render_truncation_mid_multibyte_stays_utf8():
     r = render_inbound("t", "é".encode() * 3, S(max_message_bytes=3))
     assert r["truncated"] is True
+    assert r["encoding"] == "utf8" and r["payload"] == "é"
+
+
+def test_render_utf8_boundary_aa_e():
+    r = render_inbound("t", "aé".encode(), S(max_message_bytes=2))
+    assert r["encoding"] == "utf8" and r["payload"] == "a" and r["truncated"] is True
+
+
+def test_render_utf8_boundary_four_byte_char():
+    r = render_inbound("t", "a😀".encode(), S(max_message_bytes=4))
+    assert r["encoding"] == "utf8" and r["payload"] == "a"
+
+
+def test_render_truncated_binary_still_base64():
+    r = render_inbound("t", b"\xff\xfe" + b"a" * 10, S(max_message_bytes=5))
     assert r["encoding"] == "base64"
-    assert base64.b64decode(r["payload"]) == "é".encode() + b"\xc3"
+
+
+def test_render_untruncated_invalid_utf8_still_base64():
+    assert render_inbound("t", b"ab\xc3", S())["encoding"] == "base64"
+
+
+def test_render_true_size_from_precapped_payload():
+    s = S(max_message_bytes=8)
+    r = render_inbound("t", b"a" * 9, s, size=1_000_000)
+    assert r["bytes"] == 1_000_000 and r["truncated"] is True and r["payload"] == "a" * 8
+
+
+def test_render_size_hint_never_shrinks():
+    assert render_inbound("t", b"abc", S(), size=1)["bytes"] == 3
 
 
 def test_render_empty_payload():
