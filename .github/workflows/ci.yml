@@ -18,18 +18,20 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Install uv
-        run: python3 -m pip install --user "uv==${UV_VERSION}"
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
       - name: Sync dependencies (locked)
-        run: python3 -m uv sync --frozen
+        run: uv sync --frozen
       - name: Lint
-        run: python3 -m uv run --frozen ruff check .
+        run: uv run --frozen ruff check .
       - name: Type check
-        run: python3 -m uv run --frozen mypy src --strict
+        run: uv run --frozen mypy src --strict
       - name: Unit tests with coverage gate
-        run: python3 -m uv run --frozen pytest -m "not integration" --cov=src/mcp_mqtt --cov-branch --cov-fail-under=85
+        run: uv run --frozen pytest -m "not integration" --cov=src/mcp_mqtt --cov-branch --cov-fail-under=85
       - name: Dependency audit
-        run: python3 -m uv run --frozen pip-audit
+        run: uv run --frozen pip-audit
   integration:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -37,14 +39,20 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Install uv
-        run: python3 -m pip install --user "uv==${UV_VERSION}"
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: false
       - name: Sync dependencies (locked)
-        run: python3 -m uv sync --frozen
+        run: uv sync --frozen
+      - name: Generate throwaway EMQX test key
+        run: ./docker/init-test-env.sh > /dev/null
       - name: Start test brokers
         run: docker compose -f docker/docker-compose.yml up -d --wait
       - name: Integration tests
-        run: python3 -m uv run --frozen pytest -m integration
+        run: |
+          eval "$(./docker/init-test-env.sh)"
+          uv run --frozen pytest -m integration
       - name: Stop test brokers
         if: always()
         run: docker compose -f docker/docker-compose.yml down -v
