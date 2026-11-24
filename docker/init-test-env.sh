@@ -2,6 +2,7 @@
 # Generate a random, throwaway EMQX API key for the local test broker (never committed).
 set -euo pipefail
 cd "$(dirname "$0")"
+mkdir -p emqx
 if [ ! -f emqx/api-keys.txt ]; then
   umask 077
   printf 'mcp-test-key:%s\n' "$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)" > emqx/api-keys.txt
